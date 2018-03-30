@@ -7,3 +7,6 @@ $container = new \DI\Container();
 $farmService = $container->get('FarmGame\\Service\\FarmService');
 
 var_dump($farmService->processTurn());
+
+?>
+<form action=""

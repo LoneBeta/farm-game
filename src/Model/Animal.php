@@ -17,7 +17,7 @@ abstract class Animal
     /**
      * @var int
      */
-	protected $appetite;
+	public $appetite;
 
     /**
      * Animal constructor.
@@ -46,14 +46,6 @@ abstract class Animal
     /**
      * @return int
      */
-    public function getAppetite()
-    {
-        return $this->appetite;
-    }
-
-    /**
-     * @return int
-     */
     public function getFeedingInterval()
     {
         return $this->feedingInterval;
@@ -68,5 +60,10 @@ abstract class Animal
             return true;
         }
         return false;
+    }
+
+    public function setAppetite($appetite)
+    {
+        $this->appetite = $appetite;
     }
 }
