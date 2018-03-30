@@ -9,18 +9,35 @@ class AnimalMap
      */
     protected $animals;
 
+    /**
+     * @var int
+     */
+    protected $turns;
+
     public function __construct($config)
     {
-        if(isset($config->fromFile)){
+        if (isset($config->fromFile)) {
             $this->animals = $this->createFromFile($config);
+            $this->turns   = $config->turns;
         } else {
             $this->animals = $this->createFromArray($config);
         }
     }
 
+    /**
+     * @return array
+     */
     public function getAnimals()
     {
         return $this->animals;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTurns()
+    {
+        return $this->turns;
     }
 
     /**
@@ -36,6 +53,7 @@ class AnimalMap
                 ];
             }
         }
+
         return $animals;
     }
 

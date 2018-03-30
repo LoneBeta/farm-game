@@ -66,4 +66,9 @@ abstract class Animal
     {
         $this->appetite = $appetite;
     }
+
+    public function getAppetite()
+    {
+        return $this->appetite;
+    }
 }

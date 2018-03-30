@@ -13,16 +13,24 @@ final class FarmServiceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->farmService = new \FarmGame\Service\FarmService(new \FarmGame\Factory\AnimalFactory());
+        $this->farmService = new \FarmGame\Service\FarmService(
+            new \FarmGame\Factory\AnimalFactory(),
+            new \FarmGame\Service\StateService()
+        );
     }
 
     public function testExecute(): void
     {
-        $this->assertInternalType('string',$this->farmService->execute());
+        $this->assertInternalType('string', $this->farmService->execute());
     }
 
     public function testProcessTurn(): void
     {
-        $this->assertTrue($this->farmService->processTurn());
+        $this->assertInternalType('string', $this->farmService->processTurn());
+    }
+
+    public function testNewGame(): void
+    {
+        $this->assertInternalType('string', $this->farmService->newGame());
     }
 }

@@ -6,4 +6,4 @@ $container = new \DI\Container();
 
 $farmService = $container->get('FarmGame\\Service\\FarmService');
 
-var_dump($farmService->processTurn());
+var_dump($farmService->execute());

@@ -4,6 +4,9 @@ namespace FarmGame\Service;
 
 class StateService
 {
+    /**
+     * @var string
+     */
     protected $file = __DIR__.'/../../resources/state.json';
 
     /**

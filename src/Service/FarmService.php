@@ -49,15 +49,19 @@ class FarmService
     public function setUp()
     {
         $animalMap     = new AnimalMap($this->stateService->getState());
-        $this->turns   = $animalMap->turns ?? 0;
+        $this->turns   = $animalMap->getTurns() ?? 0;
         $this->animals = $this->createAnimals($animalMap);
     }
 
     /**
+     * Function to run all 50 turns at once.
+     *
      * @return string
      */
-    public function execute()
+    public function execute(): string
     {
+        $this->newGame();
+
         $c = 0;
         do {
             $this->processTurn();
@@ -70,23 +74,28 @@ class FarmService
     /**
      *
      */
-    public function newGame()
+    public function newGame(): string
     {
         $this->stateService->clearState();
         $this->setUp();
         $this->stateService->saveState($this->animals, $this->turns);
+
+        return 'New Game Created';
     }
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function processTurn()
+    public function processTurn(): string
     {
         $this->setUp();
 
         $animal = $this->getRandomAnimal();
         $animal->feed();
 
+        /**
+         * Process turn for each animal and remove dead animals
+         */
         foreach ($this->animals as $key => $animal) {
             $animal->processTurn();
             if ($animal->hasStarvedToDeath()) {
@@ -107,14 +116,14 @@ class FarmService
         $gameState = $this->buildGameState();
 
         if ($this->gameHasTooFewAnimals($gameState)) {
-            return 'lost';
+            return 'Lost';
         }
 
         if (!$this->gameHasTooFewAnimals($gameState) && $this->turns >= $this->maxTurns) {
-            return 'won';
+            return 'Won';
         }
 
-        return 'in-progress';
+        return 'In Progress';
     }
 
     /**
@@ -135,7 +144,7 @@ class FarmService
      * @param $gameState
      * @return bool
      */
-    protected function gameHasTooFewAnimals($gameState)
+    protected function gameHasTooFewAnimals($gameState): bool
     {
         foreach ($this->victoryCriteria as $animal => $amount) {
             if (!isset($gameState[$animal])) {
@@ -153,7 +162,7 @@ class FarmService
     /**
      * @return Animal
      */
-    protected function getRandomAnimal()
+    protected function getRandomAnimal(): Animal
     {
         shuffle($this->animals);
 
@@ -161,45 +170,17 @@ class FarmService
     }
 
     /**
+     * @param AnimalMap $animalMap
      * @return array
      */
-    protected function createAnimals(AnimalMap $animalMap)
+    protected function createAnimals(AnimalMap $animalMap): array
     {
         $animals = [];
         foreach ($animalMap->getAnimals() as $animal) {
             foreach ($this->animalFactory->createAnimals($animal->friendlyName, 1) as $animalObject) {
-                $animalObject->setAppetite($animal->appetite);
-                $animals[] = $animalObject;
-            }
-        }
-
-        return $animals;
-    }
-
-    /**
-     * @return array
-     */
-    protected function createAnimalsFromAnimalMap($animalMap)
-    {
-        $animals = [];
-        foreach ($animalMap as $type => $amount) {
-            foreach ($this->animalFactory->createAnimals($type, $amount) as $animal) {
-                $animals[] = $animal;
-            }
-        }
-
-        return $animals;
-    }
-
-    /**
-     * @return array
-     */
-    protected function createAnimalsFromState($state)
-    {
-        $animals = [];
-        foreach ($state->animals as $animal) {
-            foreach ($this->animalFactory->createAnimals($animal->friendlyName, 1) as $animalObject) {
-                $animalObject->setAppetite($animal->appetite);
+                if (isset($animal->appetite)) {
+                    $animalObject->setAppetite($animal->appetite);
+                }
                 $animals[] = $animalObject;
             }
         }
